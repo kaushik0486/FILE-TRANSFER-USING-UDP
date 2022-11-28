@@ -1,0 +1,62 @@
+import os
+import socket
+
+server = '127.0.0.1'
+port = 3033
+udp = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+dest = (server, port)
+
+class Password:
+
+n = 0
+p = 0
+
+password = Password()
+
+print(password.n)
+
+while True:
+
+print ("==========================")
+print ("====PASSWORD TERMINAL====")
+print ("==========================")
+print ("====choose type ======")
+print ("1 - normal")
+print ("2 - priority")
+print ("==========================")
+
+try:
+password = 0
+password = int(input())
+except:
+print("")
+
+try:
+if password == 1:
+password.n += 1
+obj = 'n'
+udp.sendto(obj.encode(), dest)
+print ("Your password: n" + str(password.n))
+elif password == 2:
+password.p += 1
+obj = 'p'
+udp.sendto(obj.encode(), dest)
+
+print ("Your password: p" + str(password.p))
+
+else:
+print ("Invalid option")
+
+print ("==========================")
+print ("Waiting for new operation .")
+print ("Press enter ...")
+except:
+print("")
+
+try:
+input()
+except:
+os.system('cls' if os.name == 'nt' else 'clear')
+
+os.system('cls' if os.name == 'nt' else 'clear')
+udp.close()
