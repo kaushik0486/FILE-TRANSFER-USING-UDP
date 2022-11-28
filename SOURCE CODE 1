@@ -1,0 +1,91 @@
+import socket
+import sys
+import threading
+
+Prohibited = 0
+submit = 'null'
+trigger = False
+
+#variables for NORMAL
+tupleNormal = ()
+countNormal = 0
+
+#variables for PRIORITY
+tuplePriority = ()
+countPriority = 0
+
+def not_empty(any_structure):
+if any_structure:
+return True
+else:
+return False
+
+#Server UDP
+#Server IP Address
+
+HOST = ''
+# Server port listening
+PORT= 3033
+PORT2 = 3034
+HOST2= '127.0.0.1'
+dest = (HOST2, PORT2)
+udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+orig = (HOST, PORT)
+udp.bind(orig)
+obj = 'x'
+
+snormal = 0
+sPriority = 0
+while True:
+trigger = False
+msg = udp.recvfrom(1024)
+receivedpassword = msg[0]
+
+if(receivedpassword[0] == 110):
+snormal += 1
+tupleNormal += (snormal,)
+print(tupleNormal)
+elif(receivedpassword[0] == 112):
+sPriority += 1
+tuplePriority += (sPriority,)
+print(tuplePriority)
+
+elif(receivedpassword[0] == 120):
+Prohibited += 1
+print(Prohibited)
+
+print(not_empty(tupleNormal))
+
+try:
+if((Prohibited == 3) and (not_empty(tuplePriority))):
+countPriority += 1
+obj = str((tuplePriority[countPriority - 1])) + ' Priority '
+Prohibited = 0
+udp.sendto(obj.encode(), dest)
+
+elif((Prohibited < 3) and (not_empty(tuplNormal))):
+countNormal += 1
+obj = str((tupleNormal[countNormal - 1])) + ' normal'
+udp.sendto(obj.encode(), dest)
+
+elif ((not_empty(tuplePriority)) and (not_empty(tupleNormal) == False)):
+countPriority += 1
+obj = str((tuplePriority[countPriority - 1])) + ' Priority'
+Prohibited = 0
+udp.sendto(obj.encode(), dest)
+
+elif ((not_empty(tupleNormal)) and (not_empty(tuplePriority) == False)):
+countNormal += 1
+obj = str((tupleNormal[countNormal - 1])) + ' normal'
+udp.sendto(obj.encode(), dest)
+
+except:
+obj = 'Waiting ...'
+udp.sendto(obj.encode(), dest)
+tuplePriority = ()
+countPriority = 0
+tuplaNormal = ()
+
+countNormal = 0
+Prohibited = 0
+udp.close()
